@@ -50,7 +50,9 @@ const login = async (req, res, next) => {
           maxAge: 30 * 60 * 1000,
           httpOnly: true,
         });
-        res.status(200).json({ email: user.email, name: user.name });
+        res
+          .status(200)
+          .json({ email: user.email, name: user.name, avatar: user.avatar });
       }
     );
   } catch (error) {
