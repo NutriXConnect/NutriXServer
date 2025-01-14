@@ -30,6 +30,10 @@ const userSchemaObj = {
     required: true,
     default: false,
   },
+  avatar: {
+    type: String,
+    required: false,
+  },
 };
 
 const userSchema = new mongoose.Schema(userSchemaObj, { timestamps: true });
