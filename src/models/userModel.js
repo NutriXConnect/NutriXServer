@@ -30,8 +30,19 @@ const userSchemaObj = {
     required: true,
     default: false,
   },
+
   avatar: {
     type: String,
+    required: false,
+  },
+
+  otp: {
+    type: String,
+    required: false,
+  },
+
+  otpExpiry: {
+    type: Date,
     required: false,
   },
 };
