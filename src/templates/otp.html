@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NutriXConnect Password Reset</title>
+    <style>
+      /* Inline styles for email compatibility */
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fa;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .email-wrapper {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin-bottom: 20px;
+        border-top: 6px solid #2b855b;
+      }
+
+      .stripe-header {
+        background: repeating-linear-gradient(
+          45deg,
+          #e8f5e9,
+          #e8f5e9 10px,
+          #f1f8e9 10px,
+          #f1f8e9 20px
+        );
+        padding: 20px;
+        margin: -40px -40px 30px -40px;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .logo {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .logo-text {
+        color: #2b855b;
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e8f5e9;
+      }
+
+      .header h1 {
+        color: #1a1a1a;
+        font-size: 24px;
+        margin: 0;
+        padding: 0;
+      }
+
+      .greeting {
+        color: #333333;
+        font-size: 18px;
+        margin-bottom: 25px;
+      }
+
+      .otp-container {
+        background-color: #e8f5e9;
+        border: 2px solid #2b855b;
+        border-radius: 8px;
+        padding: 25px;
+        margin: 30px 0;
+        text-align: center;
+      }
+
+      .otp-code {
+        font-size: 32px;
+        font-weight: bold;
+        color: #2b855b;
+        letter-spacing: 8px;
+        margin: 15px 0;
+      }
+
+      .instructions {
+        color: #555555;
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 25px 0;
+      }
+
+      .validity {
+        background-color: #fff3e0;
+        border-left: 4px solid #ff9800;
+        padding: 15px;
+        margin: 20px 0;
+        font-size: 14px;
+        color: #bf360c;
+      }
+
+      .footer {
+        text-align: center;
+        color: #666666;
+        font-size: 14px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e8f5e9;
+        background-color: #f9f9f9;
+        margin: 0 -40px -40px -40px;
+        padding: 20px 40px;
+        border-radius: 0 0 12px 12px;
+      }
+
+      .support {
+        color: #2b855b;
+        text-decoration: none;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="email-wrapper">
+        <div class="stripe-header">
+          <div class="logo">
+            <h1 class="logo-text">NutriXConnect</h1>
+          </div>
+        </div>
+
+        <div class="header">
+          <h1>Password Reset Verification</h1>
+        </div>
+
+        <div class="greeting">Hello #{USER_NAME},</div>
+
+        <div class="instructions">
+          We received a request to reset your password for your NutriXConnect
+          account. To proceed with the password reset, please use the following
+          verification code:
+        </div>
+
+        <div class="otp-container">
+          <div class="otp-code">#{OTP}</div>
+          <div style="color: #4a4a4a; font-size: 14px">
+            Please enter this code to reset your password
+          </div>
+        </div>
+
+        <div class="validity">
+          <strong>Note:</strong> This verification code will expire in 10
+          minutes for security purposes.
+        </div>
+
+        <div class="instructions">
+          If you didn't request a password reset, please ignore this email or
+          contact our support team if you have any concerns about your account
+          security.
+        </div>
+
+        <div class="footer">
+          <p>
+            Need help? Contact our support team at
+            <a href="mailto:support@nutrixconnect.com" class="support"
+              >support@nutrixconnect.com</a
+            >
+          </p>
+          <p>&copy; 2024 NutriXConnect. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
