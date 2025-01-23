@@ -9,8 +9,8 @@ const { authenticate, authorize } = require("../utils/authentication");
 
 const router = express.Router();
 
-router.get("/listings", getDietitianListings);
-router.get("/profile/:id", getDietitianProfile);
+router.get("/listings", authenticate, getDietitianListings);
+router.get("/profile/:id", authenticate, getDietitianProfile);
 router.post(
   "/profile",
   authenticate,
