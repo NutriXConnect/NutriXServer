@@ -63,10 +63,9 @@ const getDietitianListings = async (req, res, next) => {
       message: "Get dietitian listings successfully",
       data: result,
       pagination: {
-        totalCount,
-        totalPages,
+        totalItems: totalCount,
         currentPage: parseInt(page),
-        limit,
+        pageSize: limit,
       },
     });
   } catch (error) {
