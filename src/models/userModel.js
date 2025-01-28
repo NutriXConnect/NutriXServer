@@ -7,6 +7,23 @@ const userSchemaObj = {
     required: true,
   },
 
+  age: {
+    type: Number,
+    required: true,
+  },
+
+  gender: {
+    type: String,
+    required: true,
+    enum: ["male", "female", "other"],
+  },
+
+  mobile: {
+    type: String,
+    required: false,
+    unique: true,
+  },
+
   email: {
     type: String,
     required: true,
@@ -25,7 +42,7 @@ const userSchemaObj = {
     default: "user",
   },
 
-  resetPasswordRequuired: {
+  resetPasswordRequired: {
     type: Boolean,
     required: true,
     default: false,
