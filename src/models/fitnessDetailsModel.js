@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
 const fitnessSchemaObj = {
-  age: {
-    type: Number,
-    required: true,
-  },
-
   height: {
     type: Number,
     required: false,
@@ -14,12 +9,6 @@ const fitnessSchemaObj = {
   weight: {
     type: Number,
     required: false,
-  },
-
-  gender: {
-    type: String,
-    required: true,
-    enum: ["male", "female", "other"],
   },
 
   others: {
