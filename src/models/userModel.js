@@ -62,6 +62,12 @@ const userSchemaObj = {
     type: Date,
     required: false,
   },
+  orders: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "OrderModel",
+    required: false,
+    default: [],
+  },
 };
 
 const userSchema = new mongoose.Schema(userSchemaObj, { timestamps: true });

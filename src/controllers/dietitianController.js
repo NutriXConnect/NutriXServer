@@ -1,13 +1,25 @@
 const DietitianProfileModel = require("../models/dietitianModel");
+const PlanModel = require("../models/planModel");
 const UserModel = require("../models/userModel");
 
 const getDietitianProfile = async (req, res, next) => {
   try {
     const dietitianId = req.params.id;
-    const dietitian = await DietitianProfileModel.findById(dietitianId);
+    let dietitian = await DietitianProfileModel.findById(dietitianId);
     if (!dietitian) {
       return res.status(404).json({ message: "Dietitian not found!" });
     }
+    let plans = [];
+    for (let planId of dietitian.plans) {
+      const plan = await PlanModel.findById(planId);
+      if (plan) {
+        plans.push(plan);
+      }
+    }
+    dietitian = dietitian.toObject();
+    delete dietitian.plans;
+    dietitian.plans = plans;
+
     res.status(200).json(dietitian);
   } catch (error) {
     next(error);
@@ -135,6 +147,7 @@ const createDietitian = async (req, res, next) => {
 const createPlans = async (req, res, next) => {
   try {
     const dietitianId = req.user._id;
+    const plan = req.body;
     const dietitian = await DietitianProfileModel.findOne({
       userId: dietitianId,
     });
@@ -145,17 +158,17 @@ const createPlans = async (req, res, next) => {
 
     let minPrice = dietitian.startingPrice;
 
-    for (let plan of req.body) {
-      if (plan.price != 0 && plan.price < minPrice) {
-        minPrice = plan.price;
-      }
+    if (
+      (plan.price != 0 && plan.price < minPrice) ||
+      dietitian.startingPrice == 0
+    ) {
+      minPrice = plan.price;
     }
+
     dietitian.startingPrice = minPrice;
-    if (dietitian.plans !== undefined) {
-      dietitian.plans = [...dietitian.plans, ...req.body];
-    } else {
-      dietitian.plans = [...req.body];
-    }
+
+    const createdPlan = await PlanModel.create(plan);
+    dietitian.plans = [createdPlan._id, ...dietitian.plans];
 
     await dietitian.save();
 
