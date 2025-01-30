@@ -17,6 +17,11 @@ router.post(
   authorize(["admin", "superadmin"]),
   createDietitian
 );
-router.post("/plans", authenticate, authorize(["dietitian"]), createPlans);
+router.post(
+  "/plans",
+  authenticate,
+  authorize(["dietitian", "admin"]),
+  createPlans
+);
 
 module.exports = router;

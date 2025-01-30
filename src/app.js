@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dietitianRoutes = require("./routes/dietitianRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(cookieParser());
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dietitian", dietitianRoutes);
+app.use("/api/order", orderRoutes);
 
 app.use((err, res) => {
   const statusCode = err.statusCode || 500;
