@@ -16,7 +16,7 @@ const createOrder = async (req, res, next) => {
     const user = await UserModel.findById(userId);
     // const user = await UserModel.findOne({ email: userId });
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      next({ statusCode: 404, message: "User not found!" });
     }
 
     const dietitian = await DietitianProfileModel.findOne({
@@ -24,14 +24,15 @@ const createOrder = async (req, res, next) => {
     }).select("plans");
 
     if (!dietitian || !dietitian.plans.some((plan) => plan.equals(planId))) {
-      return res
-        .status(404)
-        .json({ message: "Dietitian not found! or Plan not found" });
+      next({
+        statusCode: 404,
+        message: "Plan not found or Dietitian not found",
+      });
     }
 
     const plan = await PlanModel.findById(planId);
     if (!plan) {
-      return res.status(404).json({ message: "Plan not found!" });
+      next({ statusCode: 404, message: "Plan not found" });
     }
 
     const orderObj = await OrderModel.create({
@@ -117,10 +118,7 @@ const verifyPaymentController = async (req, res) => {
       throw new Error("Invalid Razorpay Signature");
     }
   } catch (error) {
-    res.status(500).json({
-      status: "failure",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -131,10 +129,11 @@ const updateOrderStatus = async (razorpayOrderId, status) => {
     { new: true }
   );
   if (!order) {
-    throw new Error("Order not found!");
+    next({ statusCode: 404, message: "Order not found!" });
   }
   return;
 };
+
 module.exports = {
   createOrder,
   verifyPaymentController,

@@ -12,7 +12,7 @@ const updateUserProfileDetails = async (req, res, next) => {
     ).select("name email age mobile gender avatar -_id");
 
     if (!updatedUser) {
-      return res.status(404).json({ message: "User not found!" });
+      next({ statusCode: 404, message: "User not found!" });
     }
 
     let fitnessDetails = await FitnessDetailsModel.findOne({
@@ -50,7 +50,7 @@ const getUserProfileByUserId = async (req, res, next) => {
       "name email age mobile gender avatar -_id"
     );
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      next({ statusCode: 404, message: "User not found" });
     }
     const userProfile = await FitnessDetailsModel.findOne({ user: userId });
 

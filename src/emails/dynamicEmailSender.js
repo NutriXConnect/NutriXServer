@@ -42,16 +42,12 @@ const sendEmailerHelper = async (otp, userName, to) => {
       html: finalOTPTemplate,
     };
 
-    transporter
-      .sendMail(emailObj)
-      .then(() => {
-        console.log("Email Sent");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    await transporter.sendMail(emailObj);
+    console.log("Email sent successfully!");
+    return true;
   } catch (error) {
     console.log(error.message);
+    return false;
   }
 };
 

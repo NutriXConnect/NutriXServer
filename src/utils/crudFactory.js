@@ -6,7 +6,6 @@ const createFactory = (Model) => {
       if (!elementModel) {
         const statusCode = 400;
         const message = "Failed to add data";
-        console.log("element model not find");
         next({ statusCode: statusCode, message: message });
       }
 
