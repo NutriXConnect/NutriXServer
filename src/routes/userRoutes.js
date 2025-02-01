@@ -1,6 +1,10 @@
 const express = require("express");
 
-const { createUser, deleteUser } = require("../controllers/userController");
+const {
+  createUser,
+  deleteUser,
+  deleteAllOrders,
+} = require("../controllers/userController");
 const { authenticate, authorize } = require("../utils/authentication");
 const {
   updateUserProfileDetails,
@@ -21,5 +25,12 @@ router.delete(
 // User profile details routes
 router.patch("/details", authenticate, updateUserProfileDetails);
 router.get("/details", authenticate, getUserProfileByUserId);
+
+router.delete(
+  "/orders/:userId",
+  authenticate,
+  authorize(["superadmin"]),
+  deleteAllOrders
+);
 
 module.exports = router;

@@ -134,7 +134,50 @@ const updateOrderStatus = async (razorpayOrderId, status) => {
   return;
 };
 
+const getProfileOrdersList = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+
+    const status = req.query.status;
+
+    const sortBy = req.query.sortBy || "-updatedAt";
+
+    const query = { userId };
+    if (status) {
+      query.status = status;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const orders = await OrderModel.find(query)
+      .sort(sortBy)
+      .skip(skip)
+      .limit(limit)
+      .select("_id createdAt status totalAmount planDetails.name");
+
+    const totalItems = await OrderModel.countDocuments(query);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+      pagination: {
+        currentPage: page,
+        pageSize: limit,
+        totalItems,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createOrder,
   verifyPaymentController,
+  getProfileOrdersList,
 };
