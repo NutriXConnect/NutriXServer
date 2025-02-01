@@ -85,6 +85,7 @@ const getDietitianListings = async (req, res, next) => {
   }
 };
 
+//Future use
 const transfomedQueryHelper = (myQuery) => {
   const parseQuery = JSON.parse(myQuery);
   console.log(parseQuery);
@@ -120,14 +121,15 @@ const transfomedQueryHelper = (myQuery) => {
 const createDietitian = async (req, res, next) => {
   try {
     if (!req.body.userId) {
-      return res.status(400).json({ message: "userId is required!" });
+      next({ statusCode: 400, message: "User Id is required" });
     }
 
     const user = await UserModel.findById(req.body.userId);
 
     if (!user) {
-      return res.status(404).json({
-        message: "User with id: " + req.body.userId + " does not exist.",
+      next({
+        statusCode: 404,
+        message: "User with id:" + req.body.userId + " does not exist.",
       });
     }
 
@@ -153,7 +155,7 @@ const createPlans = async (req, res, next) => {
     });
 
     if (!dietitian) {
-      return res.status(404).json({ message: "Dietitian not found!" });
+      next({ statusCode: 404, message: "Dietitian not found" });
     }
 
     let minPrice = dietitian.startingPrice;

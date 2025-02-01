@@ -15,8 +15,9 @@ const login = async (req, res, next) => {
     const user = await UserModel.findOne({ email: email });
     if (!user) {
       next({
-        statusCode: 401,
-        message: "Authentication failed. User not found",
+        statusCode: 404,
+        message:
+          "Email not found. Please enter correct email address or sign up.",
       });
     }
     const isMatch = await user.comparePassword(password);
@@ -32,7 +33,6 @@ const login = async (req, res, next) => {
       { algorithm: "HS256" },
       (err, data) => {
         if (err) {
-          console.log(err);
           throw new Error(err.message);
         }
         res.cookie("token", data, {
@@ -42,13 +42,16 @@ const login = async (req, res, next) => {
           sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
           path: "/",
         });
-        res
-          .status(200)
-          .json({ email: user.email, name: user.name, avatar: user.avatar });
+        res.status(200).json({
+          email: user.email,
+          name: user.name,
+          avatar: user.avatar,
+          role: user.role,
+        });
       }
     );
   } catch (error) {
-    next({ statusCode: 500, message: "Internal server error" });
+    next({ statusCode: 500, message: error.message });
   }
   return;
 };
@@ -72,15 +75,19 @@ const forgotPassword = async (req, res, next) => {
     const user = await UserModel.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({
-        status: "failure",
-        message: "User not found!",
-      });
+      next({ statusCode: 404, message: "Email not found! Please try again" });
     }
 
     const otp = otpGenerator();
 
-    await sendEmailerHelper(otp, user.name, email);
+    const emailSent = await sendEmailerHelper(otp, user.name, email);
+
+    if (!emailSent) {
+      next({
+        statusCode: 500,
+        message: "Failed to send email. Please try again!",
+      });
+    }
 
     user.otp = otp;
     user.otpExpiry = Date.now() + 5 * 60 * 1000;
@@ -106,10 +113,7 @@ const resetPassword = async (req, res, next) => {
     const user = await UserModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({
-        status: "failure",
-        message: "User not found!",
-      });
+      next({ statusCode: 404, message: "User not found!" });
     }
 
     if (otp && otp === user.otp) {
@@ -126,9 +130,11 @@ const resetPassword = async (req, res, next) => {
           status: "success",
           message: "Password has been updated Successfully!",
         });
+      } else {
+        next({ statusCode: 400, message: "OTP has expired. Please try again" });
       }
     } else {
-      res.status(400);
+      next({ stausCode: 400, message: "Invalid otp. Please try again" });
     }
   } catch (error) {
     next(error);
