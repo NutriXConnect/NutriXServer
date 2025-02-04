@@ -36,10 +36,10 @@ const userSchemaObj = {
   },
 
   role: {
-    type: String,
+    type: [String],
     required: true,
     enum: ["user", "dietitian", "admin", "superadmin"],
-    default: "user",
+    default: ["user"],
   },
 
   resetPasswordRequired: {
@@ -67,6 +67,10 @@ const userSchemaObj = {
     ref: "OrderModel",
     required: false,
     default: [],
+  },
+  isSubscribed: {
+    type: Boolean,
+    default: false,
   },
 };
 

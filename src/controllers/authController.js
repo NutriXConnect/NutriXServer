@@ -47,6 +47,7 @@ const login = async (req, res, next) => {
           name: user.name,
           avatar: user.avatar,
           role: user.role,
+          isSubscribed: user.isSubscribed,
         });
       }
     );
