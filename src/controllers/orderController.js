@@ -6,6 +6,7 @@ const razorpayInstance = require("../utils/razorpay");
 const PlanModel = require("../models/planModel");
 
 const crypto = require("crypto");
+const { createSubscription } = require("./subscriptionController");
 
 const createOrder = async (req, res, next) => {
   try {
@@ -101,6 +102,7 @@ const verifyPaymentController = async (req, res) => {
     switch (event) {
       case "order.paid": {
         await updateOrderStatus(payment.order_id, "completed");
+        await createSubscription(payment.order_id);
         break;
       }
       case "payment.authorized": {
@@ -118,7 +120,7 @@ const verifyPaymentController = async (req, res) => {
       throw new Error("Invalid Razorpay Signature");
     }
   } catch (error) {
-    next(error);
+    console.log(error.message);
   }
 };
 
@@ -129,7 +131,7 @@ const updateOrderStatus = async (razorpayOrderId, status) => {
     { new: true }
   );
   if (!order) {
-    next({ statusCode: 404, message: "Order not found!" });
+    throw new Error("Order not found!");
   }
   return;
 };

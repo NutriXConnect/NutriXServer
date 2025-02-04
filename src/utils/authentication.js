@@ -28,11 +28,13 @@ const authenticate = (req, res, next) => {
 };
 
 const authorize = (roles) => (req, res, next) => {
-  if (!roles.includes(req.user.role)) {
-    next({
-      statusCode: 403,
-      message: "You are not authorized to access this feature.",
-    });
+  for (idx in req.user.role) {
+    if (!roles.includes(req.user.role[idx])) {
+      next({
+        statusCode: 403,
+        message: "You are not authorized to access this feature.",
+      });
+    }
   }
   next();
 };
