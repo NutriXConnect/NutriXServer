@@ -5,6 +5,9 @@ const {
   getDietitianSubscriptions,
   getSubscriptionPageDetails,
   updateSubscriptionDates,
+  createDietPlan,
+  updateMealToDietPlan,
+  updateSubsciptionStatus,
 } = require("../controllers/subscriptionController");
 
 const router = express.Router();
@@ -28,5 +31,23 @@ router.patch(
   authorize(["dietitian", "admin", "superadmin"]),
   updateSubscriptionDates
 );
+router.post(
+  "/diet-plan",
+  authenticate,
+  authorize(["dietitian", "admin", "superadmin"]),
+  createDietPlan
+);
+router.put(
+  "/meals",
+  authenticate,
+  authorize(["dietitian", "admin", "superadmin"]),
+  updateMealToDietPlan
+);
 
+router.patch(
+  "/status",
+  authenticate,
+  authorize(["dietitian", "admin", "superadmin"]),
+  updateSubsciptionStatus
+);
 module.exports = router;

@@ -17,15 +17,15 @@ const dietPlanSchemaObj = {
     ref: "UserModel",
     required: true,
   },
-  plans: [
+  mealPlan: [
     {
-      date: { type: Date, required: true },
+      name: { type: String, required: true },
+      time: { type: String, required: true },
       meals: [
         {
-          time: { type: String, required: true }, // e.g., "breakfast", "lunch"
-          foodItems: [{ type: String, required: true }], // List of food items
-          calories: { type: Number },
-          notes: { type: String },
+          type: Schema.Types.ObjectId,
+          ref: "MealItemModel",
+          required: true,
         },
       ],
     },
