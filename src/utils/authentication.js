@@ -14,7 +14,6 @@ const authenticate = (req, res, next) => {
         "Access denied. No token provided. Please logout and login again.",
     });
   }
-
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
     req.user = decoded;
@@ -28,14 +27,19 @@ const authenticate = (req, res, next) => {
 };
 
 const authorize = (roles) => (req, res, next) => {
-  for (idx in req.user.role) {
-    if (!roles.includes(req.user.role[idx])) {
-      next({
-        statusCode: 403,
-        message: "You are not authorized to access this feature.",
-      });
-    }
+  // If req.user.role is an array, check if any of the user's roles match the authorized roles.
+  const userRoles = req.user.role;
+  const authorized = userRoles.some((role) => roles.includes(role));
+
+  // If no valid role is found, return a 403 response
+  if (!authorized) {
+    return next({
+      statusCode: 403,
+      message: "You are not authorized to access this feature.",
+    });
   }
+
+  // If authorized, call next() to move to the next middleware
   next();
 };
 

@@ -8,6 +8,7 @@ const {
   createDietPlan,
   updateMealToDietPlan,
   updateSubsciptionStatus,
+  getUserSubscriptionDetails,
 } = require("../controllers/subscriptionController");
 
 const router = express.Router();
@@ -18,6 +19,12 @@ router.get(
   authenticate,
   authorize(["dietitian"]),
   getDietitianSubscriptions
+);
+router.get(
+  "/user",
+  authenticate,
+  authorize(["user"]),
+  getUserSubscriptionDetails
 );
 router.get(
   "/page",

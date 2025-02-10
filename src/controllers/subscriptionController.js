@@ -1,7 +1,9 @@
+const DietitianProfileModel = require("../models/dietitianModel");
 const DietPlanModel = require("../models/dietPlanModel");
 const FitnessDetailsModel = require("../models/fitnessDetailsModel");
 const { MealItemModel } = require("../models/mealItemModel");
 const OrderModel = require("../models/orderModel");
+const PlanModel = require("../models/planModel");
 const SubscriptionModel = require("../models/subscriptionModel");
 const UserModel = require("../models/userModel");
 
@@ -234,6 +236,37 @@ const updateSubsciptionStatus = async (req, res, next) => {
     next(error);
   }
 };
+
+const getUserSubscriptionDetails = async (req, res, next) => {
+  const userId = req.user._id;
+  try {
+    const subscription = await SubscriptionModel.findOne({ user: userId });
+    if (!subscription) {
+      return res
+        .status(404)
+        .json({ message: "Subscription not found for the user." });
+    }
+    const dietitianProfile = await DietitianProfileModel.findOne({
+      userId: subscription.dietitian,
+    }).select("title rating -_id");
+
+    const dietitian = await UserModel.findById(subscription.dietitian).select(
+      "name age gender mobile email -_id"
+    );
+
+    const plan = await PlanModel.findById(subscription.plan).select(
+      "name duration price -_id"
+    );
+
+    res.status(200).json({
+      dietitian: { ...dietitian.toObject(), ...dietitianProfile.toObject() },
+      plan: plan.toObject(),
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   createSubscription,
   getSubscriptions,
@@ -243,4 +276,5 @@ module.exports = {
   createDietPlan,
   updateMealToDietPlan,
   updateSubsciptionStatus,
+  getUserSubscriptionDetails,
 };
