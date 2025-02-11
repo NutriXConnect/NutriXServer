@@ -43,11 +43,14 @@ const dietitianProfileSchemaObj = {
     required: true,
     default: 1,
   },
-  plans: {
-    type: [mongoose.Schema.Types.ObjectId],
-    required: false,
-    default: [],
-  },
+  plans: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PlanModel",
+      required: false,
+      default: [],
+    },
+  ],
 };
 
 const dietitianProfileSchema = new mongoose.Schema(dietitianProfileSchemaObj, {

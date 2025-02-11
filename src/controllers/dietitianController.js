@@ -1,24 +1,28 @@
 const DietitianProfileModel = require("../models/dietitianModel");
 const PlanModel = require("../models/planModel");
 const UserModel = require("../models/userModel");
-
+const mongoose = require("mongoose");
 const getDietitianProfile = async (req, res, next) => {
   try {
-    const dietitianId = req.params.id;
-    let dietitian = await DietitianProfileModel.findById(dietitianId);
+    let { id, select } = req.query;
+    if (!id) {
+      id = req.user._id;
+    }
+    const selectFields = select ? select.split(" ") : [];
+
+    let query = DietitianProfileModel.findOne({
+      $or: [{ userId: id }, { _id: id }],
+    }).select(select);
+
+    if (selectFields.includes("plans") || !select) {
+      query = query.populate("plans");
+    }
+
+    let dietitian = await query;
+
     if (!dietitian) {
       return res.status(404).json({ message: "Dietitian not found!" });
     }
-    let plans = [];
-    for (let planId of dietitian.plans) {
-      const plan = await PlanModel.findById(planId);
-      if (plan) {
-        plans.push(plan);
-      }
-    }
-    dietitian = dietitian.toObject();
-    delete dietitian.plans;
-    dietitian.plans = plans;
 
     res.status(200).json(dietitian);
   } catch (error) {
@@ -173,6 +177,26 @@ const createPlans = async (req, res, next) => {
     dietitian.plans = [createdPlan._id, ...dietitian.plans];
 
     await dietitian.save();
+    await dietitian.populate("plans");
+    res.status(200).json(dietitian.plans);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateDietitianProfile = async (req, res, next) => {
+  try {
+    const dietitianId = req.user._id;
+    const updatedFields = req.body;
+    const dietitian = await DietitianProfileModel.findOneAndUpdate(
+      { userId: dietitianId },
+      updatedFields,
+      { new: true }
+    ).select("title summary description");
+
+    if (!dietitian) {
+      return res.status(404).json({ message: "Dietitian not found!" });
+    }
 
     res.status(200).json(dietitian);
   } catch (error) {
@@ -180,9 +204,78 @@ const createPlans = async (req, res, next) => {
   }
 };
 
+const getPlans = async (req, res, next) => {
+  try {
+    const dietitianId = req.user._id;
+    const dietitian = await DietitianProfileModel.findOne({
+      userId: dietitianId,
+    })
+      .select("plans")
+      .populate("plans");
+
+    if (!dietitian) {
+      return res.status(404).json({ message: "Dietitian not found!" });
+    }
+
+    res.status(200).json(dietitian.plans);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updatePlan = async (req, res, next) => {
+  try {
+    const planId = req.params.id;
+    const updatedFields = req.body;
+    const plan = await PlanModel.findByIdAndUpdate(
+      planId,
+      { ...updatedFields },
+      { new: true }
+    );
+
+    if (!plan) {
+      return res.status(404).json({ message: "plan not found!" });
+    }
+
+    res.status(200).json(plan);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const deletePlan = async (req, res, next) => {
+  try {
+    const planId = req.params.id;
+    const dietitianId = req.user._id;
+    const userId = new mongoose.Types.ObjectId(dietitianId);
+    const dietitian = await DietitianProfileModel.findOneAndUpdate(
+      { userId },
+      { $pull: { plans: planId } },
+      { new: true }
+    ).select("plans");
+
+    if (!dietitian) {
+      return res.status(404).json({ message: "Dietitian not found!" });
+    }
+
+    const plan = await PlanModel.findByIdAndDelete(planId);
+
+    if (!plan) {
+      return res.status(404).json({ message: "Plan not found!" });
+    }
+
+    res.status(200).json(plan);
+  } catch (e) {
+    next(e);
+  }
+};
 module.exports = {
   getDietitianProfile,
   getDietitianListings,
   createDietitian,
   createPlans,
+  updateDietitianProfile,
+  getPlans,
+  updatePlan,
+  deletePlan,
 };
