@@ -6,11 +6,13 @@ const {
   trackMeal,
 } = require("../controllers/trackingController");
 const { authenticate, authorize } = require("../utils/authentication");
+const { trackingLimiter } = require("../utils/rateLimiter");
 
-router.get("/", authenticate, getTrackingForUser);
+router.get("/", trackingLimiter, authenticate, getTrackingForUser);
 router.post("/", authenticate, createTrackingForUser);
 router.patch(
   "/meal",
+  trackingLimiter,
   authenticate,
   authorize(["user", "superadmin"]),
   trackMeal

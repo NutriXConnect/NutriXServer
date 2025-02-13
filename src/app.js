@@ -10,6 +10,8 @@ const dietitianRoutes = require("./routes/dietitianRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const trackingRoutes = require("./routes/trackingRoutes");
+const { generalLimiter } = require("./utils/rateLimiter");
+const { default: helmet } = require("helmet");
 
 const app = express();
 
@@ -37,6 +39,8 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(generalLimiter);
+app.use(helmet());
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
