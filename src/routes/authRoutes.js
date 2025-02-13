@@ -5,12 +5,13 @@ const {
   resetPassword,
   logout,
 } = require("../controllers/authController");
+const { authLimiter } = require("../utils/rateLimiter");
 
 const router = express.Router();
 
-router.post("/login", login);
-router.get("/logout", logout);
-router.patch("/forgot-password", forgotPassword);
-router.patch("/reset-password/:userId", resetPassword);
+router.post("/login", authLimiter, login);
+router.get("/logout", authLimiter, logout);
+router.patch("/forgot-password", authLimiter, forgotPassword);
+router.patch("/reset-password/:userId", authLimiter, resetPassword);
 
 module.exports = router;
