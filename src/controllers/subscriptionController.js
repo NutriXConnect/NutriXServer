@@ -128,7 +128,12 @@ const updateSubscriptionDates = async (req, res, next) => {
     if (!subscription) {
       return res.status(404).json({ message: "Subscription not found!" });
     }
-    subscription.subscriptionStartDate = startDate;
+    if (!startDate) {
+      subscription.subscriptionStartDate = "";
+      subscription.subscriptionEndDate = "";
+    } else {
+      subscription.subscriptionStartDate = startDate;
+    }
     await subscription.save();
     const updatedSubscription = await SubscriptionModel.findById(
       subscriptionId

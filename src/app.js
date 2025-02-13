@@ -9,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const dietitianRoutes = require("./routes/dietitianRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
+const trackingRoutes = require("./routes/trackingRoutes");
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/dietitian", dietitianRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/track", trackingRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
