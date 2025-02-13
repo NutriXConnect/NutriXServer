@@ -57,24 +57,18 @@ const subscriptionSchema = new mongoose.Schema(subscriptionSchemaObj, {
 
 // Pre-save middleware to calculate end date when start date is set
 subscriptionSchema.pre("save", function (next) {
-  if (
-    !this.subscriptionStartDate ||
-    isNaN(new Date(this.subscriptionStartDate))
-  ) {
+  if (this.subscriptionStartDate == null) {
+  } else if (isNaN(new Date(this.subscriptionStartDate))) {
     return next(new Error("Invalid subscriptionStartDate"));
+  } else {
+    const startDate = new Date(this.subscriptionStartDate);
+    // Add durationInMonths * 30 days to the start date
+    const daysToAdd = (this.durationInMonths || 0) * 30;
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + daysToAdd); // Add the days
+
+    this.subscriptionEndDate = endDate;
   }
-
-  const startDate = new Date(this.subscriptionStartDate);
-  console.log("Start Date:", startDate);
-
-  // Add durationInMonths * 30 days to the start date
-  const daysToAdd = (this.durationInMonths || 0) * 30;
-  const endDate = new Date(startDate);
-  endDate.setDate(endDate.getDate() + daysToAdd); // Add the days
-
-  console.log("End Date after adding days:", endDate);
-
-  this.subscriptionEndDate = endDate;
   next();
 });
 
