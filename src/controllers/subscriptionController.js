@@ -73,8 +73,8 @@ const getDietitianSubscriptions = async (req, res, next) => {
         mobile: user.mobile,
         email: user.email,
         avatar: user.avatar,
-        height: profile.height,
-        weight: profile.weight,
+        height: profile?.height || 0,
+        weight: profile?.weight || 0,
         subscriptionId: subscriptions[idx]._id,
         subscriptionStatus: subscriptions[idx].status,
       });
