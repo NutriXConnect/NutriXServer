@@ -21,6 +21,8 @@ const { PORT, DB_USER, DB_PASSWORD } = process.env;
 
 const port = PORT;
 
+app.set("trust proxy", 1);
+
 const dbURL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.2ogy90k.mongodb.net/NutriXConnect?retryWrites=true&w=majority&appName=Cluster0`;
 
 mongoose.connect(dbURL).then((connection) => {
