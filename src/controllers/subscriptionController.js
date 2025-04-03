@@ -179,7 +179,6 @@ const updateMealToDietPlan = async (req, res, next) => {
     mealPlan.meals = [...mealItemIds];
     if (mealPlanIdx === -1) {
       dietPlan.mealPlan.push(mealPlan);
-      console.log("dietPlan.mealPlan: ", JSON.stringify(dietPlan.mealPlan));
     } else {
       if (mealPlan.meals.length > 0) {
         dietPlan.mealPlan[mealPlanIdx].meals = [...mealPlan.meals];
@@ -188,8 +187,15 @@ const updateMealToDietPlan = async (req, res, next) => {
       }
     }
     await dietPlan.save();
-    console.log("dietPlan saved: ", JSON.stringify(dietPlan));
-    res.status(200).json(dietPlan);
+
+    const populatedDietPlan = await DietPlanModel.findById(dietPlanId).populate(
+      {
+        path: "mealPlan.meals",
+        model: "MealItemModel",
+      }
+    );
+
+    res.status(200).json(populatedDietPlan);
   } catch (error) {
     next(error);
   }
